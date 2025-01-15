@@ -1,0 +1,5 @@
+backend/.DS_Store
+backend/.mvn
+backend/mvnw
+backend/mvnw.cmd
+.gitignore.swp
