@@ -5,9 +5,9 @@
 
 import '@testing-library/jest-dom';
 import fetchMock from "jest-fetch-mock";
-// import { cleanup } from '@testing-library/react';
+import { cleanup } from '@testing-library/react';
 
-// afterEach(cleanup);
+afterEach(cleanup);
 //https://www.leighhalliday.com/mock-fetch-jest
 fetchMock.enableMocks();
 
