@@ -16,7 +16,7 @@ describe('Register Component', () => {
 
         expect(screen.getByPlaceholderText(/Username/i)).toBeInTheDocument();
         expect(screen.getByPlaceholderText(/Password/i)).toBeInTheDocument();
-        // expect(screen.getByText(/Register/i)).toBeInTheDocument();
+        expect(screen.getByText(/Register Now/i)).toBeInTheDocument();
     });
 
     it('updates state on user input', () => {
