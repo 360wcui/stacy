@@ -5,4 +5,4 @@ backend/mvnw
 backend/mvnw.cmd
 .gitignore.swp
 
-my-app/yarn.lock
+client/yarn.lock
