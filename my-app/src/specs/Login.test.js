@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Login from './components/Login.js'; // Adjust the import path based on your file structure
+import Login from '../components/Login.js'; // Adjust the import path based on your file structure
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
