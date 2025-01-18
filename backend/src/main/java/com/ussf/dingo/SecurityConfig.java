@@ -20,6 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()  // Disable CSRF protection for testing
+                .cors().and()      // Enable CORS support
                 .authorizeRequests()
                 .antMatchers("/api/item/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated();
