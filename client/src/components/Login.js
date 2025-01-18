@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import {SERVER_URL} from "../variables";
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -9,7 +10,7 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('/api/users/login', { username, password });
+            const response = await axios.post(`${SERVER_URL}/api/users/login`, { username, password });
             if (response.data === "Login successful") {
                 history.push('/inventory');
             } else {

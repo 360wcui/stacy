@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Login from '../components/Login.js'; // Adjust the import path based on your file structure
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import {SERVER_URL} from "../variables";
 
 // Mock axios and useHistory
 jest.mock('axios');
@@ -49,7 +50,7 @@ describe('Login Component', () => {
         fireEvent.click(screen.getByText('Login'));
 
         await waitFor(() => {
-            expect(axios.post).toHaveBeenCalledWith('/api/users/login', {
+            expect(axios.post).toHaveBeenCalledWith(`${SERVER_URL}/api/users/login`, {
                 username: 'testuser',
                 password: 'password123',
             });
@@ -73,7 +74,7 @@ describe('Login Component', () => {
         fireEvent.click(screen.getByText('Login'));
 
         await waitFor(() => {
-            expect(axios.post).toHaveBeenCalledWith('/api/users/login', {
+            expect(axios.post).toHaveBeenCalledWith(`${SERVER_URL}/api/users/login`, {
                 username: 'wronguser',
                 password: 'wrongpassword',
             });

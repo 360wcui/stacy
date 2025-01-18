@@ -3,6 +3,7 @@ import {render, screen, waitFor} from '@testing-library/react';
 import {BrowserRouter as Router} from 'react-router-dom';
 import axios from 'axios';
 import Inventory from '../components/Inventory';
+import {SERVER_URL} from "../variables";
 
 jest.mock('axios'); // Mock axios
 
@@ -65,23 +66,22 @@ describe('Inventory Component', () => {
         axios.get.mockResolvedValueOnce({data: mockItems});
 
 
+        render(
+            <Router>
+                <Inventory/>
+            </Router>
+        );
 
-            render(
-                <Router>
-                    <Inventory/>
-                </Router>
-            );
+        // Wait for the items to be displayed
+        await waitFor(() => {
+            expect(screen.getByText('Item 1')).toBeInTheDocument();
+            expect(screen.getByText('Item 2')).toBeInTheDocument();
+            expect(screen.getByText(/This is a test description for Item 1/i)).toBeInTheDocument();
 
-            // Wait for the items to be displayed
-            await waitFor(() => {
-                expect(screen.getByText('Item 1')).toBeInTheDocument();
-                expect(screen.getByText('Item 2')).toBeInTheDocument();
-                expect(screen.getByText(/This is a test description for Item 1/i)).toBeInTheDocument();
+            const itemElement = screen.getByTestId("test-table");
 
-                const itemElement = screen.getByTestId("test-table");
-
-                expect(itemElement.querySelectorAll("tr").length).toBe(3);
-            });
+            expect(itemElement.querySelectorAll("tr").length).toBe(3);
+        });
 
 
     });
@@ -89,20 +89,22 @@ describe('Inventory Component', () => {
     it('handles API errors gracefully', async () => {
         // Mock API error
         axios.get.mockRejectedValueOnce(new Error('API Error'));
-
-        render(
-            <Router>
-                <Inventory/>
-            </Router>
-        );
+         // act(() => {
+            render(
+                <Router>
+                    <Inventory/>
+                </Router>
+            );
 
         // Ensure the component renders correctly even on error
         // expect(screen.getByText('Your Inventory')).toBeInTheDocument();
         // expect(screen.getByText('Add New Item')).toBeInTheDocument();
 
-        // Verify error is logged (optional if you have additional handling)
-        await waitFor(() => {
-            expect(axios.get).toHaveBeenCalledWith('/api/items/user/1');
-        });
+            // Verify error is logged (optional if you have additional handling)
+            await waitFor(() => {
+
+                expect(axios.get).toHaveBeenCalledWith(`${SERVER_URL}/api/item/user/1`);
+            });
+        // });
     });
 });

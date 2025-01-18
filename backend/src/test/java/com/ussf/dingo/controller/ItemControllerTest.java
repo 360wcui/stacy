@@ -42,7 +42,7 @@ class ItemControllerTest {
     void testCreateItem() throws Exception {
         Mockito.when(itemRepository.save(any(Item.class))).thenReturn(item1);
 
-        mockMvc.perform(post("/api/items")
+        mockMvc.perform(post("/api/item")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Item1\",\"description\":\"Description1\",\"quantity\":10}"))
                 .andExpect(status().isOk())
@@ -56,7 +56,7 @@ class ItemControllerTest {
     void testGetUserItems() throws Exception {
         Mockito.when(itemRepository.findByUserId(1L)).thenReturn(Arrays.asList(item1, item2));
 
-        mockMvc.perform(get("/api/items/user/1"))
+        mockMvc.perform(get("/api/item/user/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(item1.getId()))
                 .andExpect(jsonPath("$[1].id").value(item2.getId()));
@@ -66,7 +66,7 @@ class ItemControllerTest {
     void testGetAllItems() throws Exception {
         Mockito.when(itemRepository.findAll()).thenReturn(Arrays.asList(item1, item2));
 
-        mockMvc.perform(get("/api/items"))
+        mockMvc.perform(get("/api/item"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(item1.getId()))
                 .andExpect(jsonPath("$[1].id").value(item2.getId()));
@@ -76,7 +76,7 @@ class ItemControllerTest {
     void testGetItemById() throws Exception {
         Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
 
-        mockMvc.perform(get("/api/items/1"))
+        mockMvc.perform(get("/api/item/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(item1.getId()))
                 .andExpect(jsonPath("$.name").value(item1.getName()));
@@ -87,7 +87,7 @@ class ItemControllerTest {
         Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
         Mockito.when(itemRepository.save(any(Item.class))).thenReturn(item1);
 
-        mockMvc.perform(put("/api/items/1")
+        mockMvc.perform(put("/api/item/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"UpdatedName\",\"description\":\"UpdatedDescription\",\"quantity\":20}"))
                 .andExpect(status().isOk())
@@ -100,7 +100,7 @@ class ItemControllerTest {
     void testDeleteItem() throws Exception {
         Mockito.doNothing().when(itemRepository).deleteById(1L);
 
-        mockMvc.perform(delete("/api/items/1"))
+        mockMvc.perform(delete("/api/item/1"))
                 .andExpect(status().isOk());
     }
 }

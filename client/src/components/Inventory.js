@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import Table from 'react-bootstrap/Table'
+import MyNewItemModal from "./MyNewItemModal";
+import {SERVER_URL} from "../variables";
 
 
 const Inventory = () => {
     const [items, setItems] = useState([]);
+    const [newItemModal, setNewItemModal] = useState(false);
 
     useEffect(() => {
-        axios.get('/api/items/user/1')
+        axios.get(`${SERVER_URL}/api/item/user/1`)
             .then(response => setItems(response.data))
             .catch(error => console.error(error));
     }, []);
 
     const addNewItem = () => {
-
+        setNewItemModal(true)
     }
 
     const handleDelete = (e, index) => {
@@ -52,6 +54,7 @@ const Inventory = () => {
             >
                 Add New Item
             </button>
+            <MyNewItemModal modal={newItemModal} setModal={setNewItemModal}/>
 
         </div>
     );
