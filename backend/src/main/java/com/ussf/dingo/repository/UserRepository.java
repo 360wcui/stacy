@@ -1,0 +1,10 @@
+// Item Repository
+package com.ussf.dingo.repository;
+
+import com.ussf.dingo.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+}
