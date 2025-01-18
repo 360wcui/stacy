@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {SERVER_URL} from "../variables";
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -7,7 +8,7 @@ const Register = () => {
 
     const handleRegister = async () => {
         try {
-            const response = await axios.post('/api/users/register', { username, password });
+            const response = await axios.post(`${SERVER_URL}/api/users/register`, { username, password });
             alert(response.data);
         } catch (error) {
             console.error(error);

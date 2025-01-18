@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import Register from '../components/Register.js';
+import {SERVER_URL} from "../variables";
 
 // Mock axios
 jest.mock('axios');
@@ -45,7 +46,7 @@ describe('Register Component', () => {
 
         await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(1));
 
-        expect(axios.post).toHaveBeenCalledWith('/api/users/register', {
+        expect(axios.post).toHaveBeenCalledWith(`${SERVER_URL}/api/users/register`, {
             username: 'testuser',
             password: 'password123',
         });
@@ -66,7 +67,7 @@ describe('Register Component', () => {
 
         await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(1));
 
-        expect(axios.post).toHaveBeenCalledWith('/api/users/register', {
+        expect(axios.post).toHaveBeenCalledWith(`${SERVER_URL}/api/users/register`, {
             username: 'testuser',
             password: 'password123',
         });
