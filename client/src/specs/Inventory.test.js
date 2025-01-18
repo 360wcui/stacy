@@ -88,7 +88,10 @@ describe('Inventory Component', () => {
 
     it('handles API errors gracefully', async () => {
         // Mock API error
-        axios.get.mockRejectedValueOnce(new Error('API Error'));
+
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        axios.get.mockRejectedValue(new Error('Network error'));
+
          // act(() => {
             render(
                 <Router>
@@ -103,7 +106,7 @@ describe('Inventory Component', () => {
             // Verify error is logged (optional if you have additional handling)
             await waitFor(() => {
 
-                expect(axios.get).toHaveBeenCalledWith(`${SERVER_URL}/api/item/user/1`);
+                expect(consoleErrorSpy).toHaveBeenCalled();
             });
         // });
     });
