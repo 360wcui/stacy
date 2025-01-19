@@ -16,7 +16,7 @@ public class ItemController {
 
     @GetMapping("/user/{userId}")
     public List<Item> getUserItems(@PathVariable Long userId) {
-        System.out.println("gets here user items");
+        System.out.println("gets items for user: " + userId);
         return itemRepository.findByUserId(userId);
     }
 
@@ -30,7 +30,7 @@ public class ItemController {
     @PreAuthorize("hasRole('USER')")  // Check for role-based access
     @PutMapping("/user/{userId}")
     public Item saveUserItems(@PathVariable Long userId, @RequestBody Item newItem) {
-        System.out.println("gets here user items");
+        System.out.println("Update item for user " + userId);
         newItem.setUserId(userId);
         return itemRepository.save(newItem);
     }
@@ -42,6 +42,7 @@ public class ItemController {
 
     @GetMapping("/{id}")
     public Item getItemById(@PathVariable Long id) {
+        System.out.println("get this item: " + id);
         return itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found"));
     }
 

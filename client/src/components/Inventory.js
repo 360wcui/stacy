@@ -184,12 +184,13 @@ const Inventory = () => {
                 .then(response => setItems(response.data))
                 .catch(error => console.error(error));
         } else {
-            axios.get(`${SERVER_URL}/api/item/user/1`)
+            const userId = 1
+            axios.get(`${SERVER_URL}/api/item/user/${userId}`)
                 .then(response => setItems(response.data))
                 .catch(error => console.error(error));
         }
 
-    }, []);
+    }, [items]);
 
     const addNewItem = () => {
         setNewItemModal(true)
