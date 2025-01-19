@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -35,12 +36,12 @@ class UserControllerTest {
         when(userService.registerUser(any(User.class))).thenReturn(testUser);
 
         // Act: call the controller method
-        User result = userController.registerUser(testUser);
+        ResponseEntity<User> result = userController.registerUser(testUser);
 
         // Assert: verify the result
         assertNotNull(result);
-        assertEquals("testuser", result.getUsername());
-        assertEquals("password123", result.getPassword());
+        assertEquals("testuser", result.getBody().getUsername());
+        assertEquals("password123", result.getBody().getPassword());
 
         // Verify that userService.registerUser was called exactly once
         verify(userService, times(1)).registerUser(any(User.class));

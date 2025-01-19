@@ -16,8 +16,8 @@ import {useHistory} from "react-router-dom";
 const Register = () => {
 
     const [formData, setFormData] = useState({
-        firstname: '',
-        lastname: '',
+        firstName: '',
+        lastName: '',
         username: '',
         password: '',
         confirmedPassword: ''
@@ -73,18 +73,18 @@ const Register = () => {
                         <form onSubmit={handleRegister}>
                                     <TextField
                                         label="First Name"
-                                        name="firstname"
+                                        name="firstName"
                                         fullWidth
-                                        value={formData.firstname}
+                                        value={formData.firstName}
                                         onChange={handleChange}
                                         required
                                     />
 
                                     <TextField
                                         label="Last Name"
-                                        name="lastname"
+                                        name="lastName"
                                         fullWidth
-                                        value={formData.lastname}
+                                        value={formData.lastName}
                                         onChange={handleChange}
                                         required
                                     />
