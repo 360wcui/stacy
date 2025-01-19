@@ -63,6 +63,7 @@ const Register = () => {
 
                         <form onSubmit={handleRegister}>
                                     <TextField
+                                        data-testid="firstName"
                                         label="First Name"
                                         name="firstName"
                                         fullWidth
@@ -72,6 +73,7 @@ const Register = () => {
                                     />
 
                                     <TextField
+                                        data-testid="lastName"
                                         label="Last Name"
                                         name="lastName"
                                         fullWidth
@@ -80,6 +82,7 @@ const Register = () => {
                                         required
                                     />
                                     <TextField
+                                        data-testid="username"
                                         label="Username"
                                         name="username"
                                         fullWidth
@@ -89,6 +92,7 @@ const Register = () => {
                                     />
 
                                     <TextField
+                                        data-testid="password"
                                         label="Password"
                                         name="password"
                                         type="password"
@@ -99,6 +103,7 @@ const Register = () => {
                                     />
 
                                     <TextField
+                                        data-testid="confirmedPassword"
                                         label="Confirm Password"
                                         name="confirmedPassword"
                                         type="password"

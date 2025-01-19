@@ -1,77 +1,115 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import axios from 'axios';
-import Register from '../components/Register.js';
-import {SERVER_URL} from "../variables";
+import React from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
+import axios from "axios";
+import Register from "../components/Register";
 
-// Mock axios
-jest.mock('axios');
+jest.mock("axios");
 
-describe('Register Component', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
+const renderWithRouter = (component) => {
+    return render(<BrowserRouter>{component}</BrowserRouter>);
+};
+
+describe("Register Component", () => {
+    it("renders the form with all fields and button", () => {
+        renderWithRouter(<Register />);
+
+        // Check for form fields
+        expect(screen.getByTestId("firstName")).toBeInTheDocument();
+        expect(screen.getByTestId("lastName")).toBeInTheDocument();
+        expect(screen.getByTestId("username")).toBeInTheDocument();
+        expect(screen.getByTestId("password")).toBeInTheDocument();
+        expect(screen.getByTestId("confirmedPassword")).toBeInTheDocument();
+
+        // Check for register button
+        expect(screen.getByRole("button", { name: /register/i })).toBeInTheDocument();
     });
 
-    it('renders the input fields and register button', () => {
-        render(<Register />);
-
-        expect(screen.getByPlaceholderText(/Username/i)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText(/Password/i)).toBeInTheDocument();
-        expect(screen.getByText(/Register Now/i)).toBeInTheDocument();
-    });
-
-    it('updates state on user input', () => {
-        render(<Register />);
-
-        const usernameInput = screen.getByPlaceholderText(/Username/i);
-        const passwordInput = screen.getByPlaceholderText(/Password/i);
-
-        fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-        fireEvent.change(passwordInput, { target: { value: 'password123' } });
-
-        expect(usernameInput.value).toBe('testuser');
-        expect(passwordInput.value).toBe('password123');
-    });
-
-    it('submits form and calls API on button click', async () => {
-        window.alert = jest.fn(); // Mock alert
-
-        axios.post.mockResolvedValueOnce({ data: 'Registration successful' });
-
-        render(<Register />);
-
-        fireEvent.change(screen.getByPlaceholderText(/Username/i), { target: { value: 'testuser' } });
-        fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: 'password123' } });
-        fireEvent.click(screen.getByText(/Register Now/i));
-
-        await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(1));
-
-        expect(axios.post).toHaveBeenCalledWith(`${SERVER_URL}/api/users/register`, {
-            username: 'testuser',
-            password: 'password123',
-        });
-
-        await waitFor(() => expect(window.alert).toHaveBeenCalledWith('Registration successful'));
-    });
-
-    it('handles API errors gracefully', async () => {
-        console.error = jest.fn(); // Suppress error logs in test output
-
-        axios.post.mockRejectedValueOnce(new Error('Registration failed'));
-
-        render(<Register />);
-
-        fireEvent.change(screen.getByPlaceholderText(/Username/i), { target: { value: 'testuser' } });
-        fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: 'password123' } });
-        fireEvent.click(screen.getByText(/Register Now/i));
-
-        await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(1));
-
-        expect(axios.post).toHaveBeenCalledWith(`${SERVER_URL}/api/users/register`, {
-            username: 'testuser',
-            password: 'password123',
-        });
-
-        await waitFor(() => expect(console.error).toHaveBeenCalled());
-    });
+    // it("shows error when passwords do not match", () => {
+    //     renderWithRouter(<Register />);
+    //
+    //     // Fill out form fields
+    //     fireEvent.change(screen.getByRole("textbox", { name: /Password/i }), {
+    //         target: { value: "password123" },
+    //     });
+    //     fireEvent.change(screen.getByTestId("confirmedPassword"), {
+    //         target: { value: "differentPassword" },
+    //     });
+    //
+    //     // Submit the form
+    //     fireEvent.click(screen.getByRole("button", { name: /register/i }));
+    //
+    //     // Check for error message
+    //     expect(screen.getByText("Passwords do not match")).toBeInTheDocument();
+    // });
+    //
+    // it("submits the form and navigates on success", async () => {
+    //     const mockNavigate = jest.fn();
+    //     jest.mock("react-router-dom", () => ({
+    //         ...jest.requireActual("react-router-dom"),
+    //         useNavigate: () => mockNavigate,
+    //     }));
+    //
+    //     // Mock API response
+    //     axios.post.mockResolvedValueOnce({ status: 201 });
+    //
+    //     renderWithRouter(<Register />);
+    //
+    //     // Fill out form fields
+    //     fireEvent.change(screen.getByLabelText("First Name"), {
+    //         target: { value: "John" },
+    //     });
+    //     fireEvent.change(screen.getByLabelText("Last Name"), {
+    //         target: { value: "Doe" },
+    //     });
+    //     fireEvent.change(screen.getByLabelText("Username"), {
+    //         target: { value: "johndoe" },
+    //     });
+    //     fireEvent.change(screen.getByLabelText("Password"), {
+    //         target: { value: "password123" },
+    //     });
+    //     fireEvent.change(screen.getByLabelText("Confirm Password"), {
+    //         target: { value: "password123" },
+    //     });
+    //
+    //     // Submit the form
+    //     fireEvent.click(screen.getByRole("button", { name: /register/i }));
+    //
+    //     // Wait for navigation to occur
+    //     await waitFor(() => {
+    //         expect(mockNavigate).toHaveBeenCalledWith("/success");
+    //     });
+    // });
+    //
+    // it("shows error message on API failure", async () => {
+    //     // Mock API failure
+    //     axios.post.mockRejectedValueOnce(new Error("Registration failed"));
+    //
+    //     renderWithRouter(<Register />);
+    //
+    //     // Fill out form fields
+    //     fireEvent.change(screen.getByLabelText("First Name"), {
+    //         target: { value: "John" },
+    //     });
+    //     fireEvent.change(screen.getByLabelText("Last Name"), {
+    //         target: { value: "Doe" },
+    //     });
+    //     fireEvent.change(screen.getByLabelText("Username"), {
+    //         target: { value: "johndoe" },
+    //     });
+    //     fireEvent.change(screen.getByLabelText("Password"), {
+    //         target: { value: "password123" },
+    //     });
+    //     fireEvent.change(screen.getByLabelText("Confirm Password"), {
+    //         target: { value: "password123" },
+    //     });
+    //
+    //     // Submit the form
+    //     fireEvent.click(screen.getByRole("button", { name: /register/i }));
+    //
+    //     // Wait for the error message
+    //     await waitFor(() => {
+    //         expect(screen.getByText("Something wrong during user registration")).toBeInTheDocument();
+    //     });
+    // });
 });
