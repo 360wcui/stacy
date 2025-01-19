@@ -46,6 +46,7 @@ const Inventory = () => {
     const [deleteId, setDeleteId] = useState(null)
     const [confirmOpen, setConfirmOpen] = useState(false)
     const [newItem, setNewItem] = useState({
+        id: null,
         name: '',
         description: '',
         quantity: 0,
@@ -53,6 +54,7 @@ const Inventory = () => {
     })
 
     const [editItem, setEditItem] = useState({
+        id: null,
         name: '',
         description: '',
         quantity: 0,
@@ -226,10 +228,9 @@ const Inventory = () => {
                         <TableBody>
                             {filteredItems && filteredItems.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
                                 <TableRow key={item.id} sx={{'&:last-child td, &:last-child th': {border: 0}}}>
-                                    <TableCell sx={{fontSize: '1.1rem'}} scope="row">{page * rowsPerPage + index + 1}</TableCell>
+                                    <TableCell sx={{fontSize: '1.1rem'}} scope="row">{item.id}</TableCell>
 
-                                    <TableCell sx={{fontSize: '1.1rem'}}><Link to={`/item`}
-                                                                               state={{currentProduct: item}}>{item.name}</Link></TableCell>
+                                    <TableCell sx={{fontSize: '1.1rem'}}>{item.name}</TableCell>
 
                                     <TableCell sx={{fontSize: '1.1rem'}}>{item.description}</TableCell>
                                     <TableCell sx={{fontSize: '1.1rem'}}>{item.quantity}</TableCell>
@@ -339,6 +340,26 @@ const Inventory = () => {
             <Dialog open={openEdit} onClose={handleCloseEdit}>
                 <DialogTitle>Edit Item</DialogTitle>
                 <DialogContent>
+                    <TextField
+                        margin="dense"
+                        name="id"
+                        label="Item ID"
+                        type="text"
+                        fullWidth
+                        disabled
+                        value={editItem.id}
+                        onChange={handleChangeEdit}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="userId"
+                        label="User ID"
+                        type="text"
+                        fullWidth
+                        disabled
+                        value={editItem.userId}
+                        onChange={handleChangeEdit}
+                    />
                     <TextField
                         margin="dense"
                         name="name"
