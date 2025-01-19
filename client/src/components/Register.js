@@ -1,28 +1,135 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import {SERVER_URL} from "../variables";
+import {
+    Typography,
+    Button,
+    Box,
+    Container,
+    TextField,
+    Card,
+    CardHeader,
+    CardContent
+} from '@mui/material';
+import {useHistory} from "react-router-dom";
 
 const Register = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
 
-    const handleRegister = async () => {
-        try {
-            const response = await axios.post(`${SERVER_URL}/api/users/register`, { username, password });
-            alert(response.data);
-        } catch (error) {
-            console.error(error);
+    const [formData, setFormData] = useState({
+        firstname: '',
+        lastname: '',
+        username: '',
+        password: '',
+        confirmedPassword: ''
+    })
+
+    const [error, setError] = useState("")
+
+    const history = useHistory()
+
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+
+        if (formData.password !== formData.confirmedPassword) {
+            setError('Passwords do not match');
+            return;
         }
-    };
+        setError('')
+
+        try {
+            const response = await axios.post(`${SERVER_URL}/api/users/register`, formData);
+
+            if(response.status === 201) {
+                history.push('/registrationSuccess')
+            } else {
+                const errorText = await response.text();
+                setError(errorText)
+            }
+        } catch(err) {
+            setError('Something wrong during user registration')
+        }
+    }
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    }
 
     return (
-        <div>
-            <h1>Register</h1>
-            <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button onClick={handleRegister}>Register Now</button>
-        </div>
-    );
+        <Card sx={{ maxWidth: 700, margin: '30px auto', border: '1px solid #356' }}>
+            <CardHeader>
+                Login
+            </CardHeader>
+            <CardContent>
+                <Container maxWidth="xs">
+                    <Box sx={{ mt: 0}}>
+                        <Typography variant="h4" align="center" gutterBottom>
+                            Register
+                        </Typography>
+
+                        <form onSubmit={handleRegister}>
+                                    <TextField
+                                        label="First Name"
+                                        name="firstname"
+                                        fullWidth
+                                        value={formData.firstname}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                    <TextField
+                                        label="Last Name"
+                                        name="lastname"
+                                        fullWidth
+                                        value={formData.lastname}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                    <TextField
+                                        label="Username"
+                                        name="username"
+                                        fullWidth
+                                        value={formData.username}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                    <TextField
+                                        label="Password"
+                                        name="password"
+                                        type="password"
+                                        fullWidth
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                    <TextField
+                                        label="Confirm Password"
+                                        name="confirmedPassword"
+                                        type="password"
+                                        fullWidth
+                                        value={formData.confirmedPassword}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                {error &&
+                                        <Typography color="error" variant="body2">
+                                            {error}
+                                        </Typography>
+                                }
+                            <Button type="submit" fullWidth variant="contained" color="primary">
+                                Register
+                            </Button>
+                        </form>
+                    </Box>
+                </Container>
+            </CardContent>
+        </Card>
+    )
 }
 
 export default Register;
