@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {SERVER_URL} from "../variables";
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
             const response = await axios.post(`${SERVER_URL}/api/users/login`, { username, password });
             if (response.data === "Login successful") {
-                history.push('/inventory');
+                navigate('/inventory');
             } else {
                 alert(response.data);
             }

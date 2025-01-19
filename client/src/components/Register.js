@@ -1,17 +1,8 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import {SERVER_URL} from "../variables";
-import {
-    Typography,
-    Button,
-    Box,
-    Container,
-    TextField,
-    Card,
-    CardHeader,
-    CardContent
-} from '@mui/material';
-import {useHistory} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {Box, Button, Card, CardContent, CardHeader, Container, TextField, Typography} from '@mui/material';
 
 const Register = () => {
 
@@ -25,7 +16,7 @@ const Register = () => {
 
     const [error, setError] = useState("")
 
-    const history = useHistory()
+    const navigation = useNavigate()
 
 
     const handleRegister = async (e) => {
@@ -41,7 +32,7 @@ const Register = () => {
             const response = await axios.post(`${SERVER_URL}/api/users/register`, formData);
 
             if(response.status === 201) {
-                history.push('/registrationSuccess')
+                navigation('/success')
             } else {
                 const errorText = await response.text();
                 setError(errorText)
