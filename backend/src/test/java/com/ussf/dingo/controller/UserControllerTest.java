@@ -27,7 +27,7 @@ class UserControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this); // Initialize mocks
         testUser = new User(); // Create a test user
-        testUser.setUsername("testuser");
+        testUser.setId(2L);
         testUser.setPassword("password123");
     }
 
@@ -41,8 +41,7 @@ class UserControllerTest {
 
         // Assert: verify the result
         assertNotNull(result);
-        assertEquals("testuser", result.getBody().getUser().getUsername());
-        assertEquals("password123", result.getBody().getUser().getPassword());
+        assertEquals(2L, result.getBody().getUserId());
 
         // Verify that userService.registerUser was called exactly once
         verify(userService, times(1)).registerUser(any(User.class));

@@ -2,6 +2,7 @@ package com.ussf.dingo.controller;
 
 import com.ussf.dingo.model.LoginRequest;
 import com.ussf.dingo.model.User;
+import com.ussf.dingo.repository.UserRepository;
 import com.ussf.dingo.security.JwtResponse;
 import com.ussf.dingo.security.JwtUtils;
 import com.ussf.dingo.service.UserService;
@@ -16,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -29,52 +32,54 @@ public class UserController {
 
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> registerUser(@RequestBody() User user){
         System.out.println(user.getFirstName() + "," + user.getLastName());
-        User encryptedUser = userService.registerUser(user);
+        User savedDncryptedUser = userService.registerUser(user);
 
         // Authenticate the user
-        System.out.println(user.getFirstName() + "," + user.getLastName() + "," + user.getPassword() + "," + user.getUsername());
-        System.out.println(encryptedUser.getFirstName() + "," + encryptedUser.getLastName() + "," + encryptedUser.getPassword() + "," + encryptedUser.getUsername());
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-        );
-        System.out.println("gets here0" + encryptedUser.getFirstName() + "," + encryptedUser.getLastName());
-
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println("gets here1" + encryptedUser.getFirstName() + "," + encryptedUser.getLastName());
-
-
-        // Generate JWT token
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        System.out.println("gets here2" + encryptedUser.getFirstName() + "," + encryptedUser.getLastName());
-
+        String jwt = authenticationHelper(user.getUsername(), user.getPassword());
 
         // Return the response with the JWT token
         System.out.println("gets registered");
-        return ResponseEntity.status(HttpStatus.CREATED).body(new JwtResponse(jwt, encryptedUser));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new JwtResponse(jwt, savedDncryptedUser.getId()));
+    }
+
+    private String authenticationHelper(String username, String password) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Generate JWT token
+        String jwt = jwtUtils.generateJwtToken(authentication);
+        return jwt;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginRequest loginRequest) {
         try{
-            System.out.println("password: " + loginRequest.getPassword() + ", " + loginRequest.getUsername());
             boolean isAuthenticated = userService.authenticate(loginRequest.getUsername(),loginRequest.getPassword());
-            System.out.println("gets authenticated");
             if (isAuthenticated){
-                System.out.println("authenticarted");
-                session.setAttribute("user", loginRequest.getUsername());
-                return ResponseEntity.ok("Login was successful!");
+                String jwt = authenticationHelper(loginRequest.getUsername(), loginRequest.getPassword());
+
+                Optional<User> savedEncryptedUserOptional = userRepository.findByUsername(loginRequest.getUsername());
+                if (savedEncryptedUserOptional.isPresent()) {
+                    System.out.println("Login was successful" + jwt);
+
+                    return ResponseEntity.ok(new JwtResponse(jwt, savedEncryptedUserOptional.get().getId()));
+                } else {
+                    System.out.println("Shall never be here");
+                }
             } else {
-                System.out.println("not authenticarted");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+                System.out.println("login was not successful");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JwtResponse());
             }
         } catch (Exception e) {
             System.out.println("there is an error authenticarted");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unknown error occurred");
         }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JwtResponse());
     }
 }

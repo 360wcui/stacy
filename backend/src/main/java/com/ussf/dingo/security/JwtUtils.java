@@ -19,7 +19,8 @@ public class JwtUtils {
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .claim("roles", userDetails.getAuthorities()) // Add claims as needed
+                .claim("roles", userDetails.getAuthorities())
+                .claim("userId", userDetails.getUser().getId()) // Add claims as needed
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(jwtSecretKey, SignatureAlgorithm.HS512)

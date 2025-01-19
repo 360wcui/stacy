@@ -1,39 +1,24 @@
 package com.ussf.dingo.security;
 
 import com.ussf.dingo.model.User;
+import lombok.Data;
 
+@Data
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
-    private User user;
+    private Long userId;
 
-    public JwtResponse(String accessToken, User user) {
+    public JwtResponse(String accessToken, Long userId) {
         this.token = accessToken;
-        this.user = user;
+        this.userId = userId;
     }
 
-    public String getAccessToken() {
-        return token;
+    public JwtResponse() {
+        this.token = "";
+        this.userId = 0L;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.token = accessToken;
-    }
 
-    public String getTokenType() {
-        return type;
-    }
-
-    public void setTokenType(String type) {
-        this.type = type;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }
 
