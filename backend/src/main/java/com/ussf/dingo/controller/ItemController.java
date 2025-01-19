@@ -27,7 +27,7 @@ public class ItemController {
         return itemRepository.save(item);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")  // Check for role-based access
+    @PreAuthorize("hasRole('USER')")  // Check for role-based access
     @PutMapping("/user/{userId}")
     public Item saveUserItems(@PathVariable Long userId, @RequestBody Item newItem) {
         System.out.println("gets here user items");
@@ -48,7 +48,9 @@ public class ItemController {
     @PreAuthorize("hasRole('USER')")  // Check for role-based access
     @PutMapping("/{id}")
     public Item updateItem(@PathVariable Long id, @RequestBody Item updatedItem) {
+        System.out.println("Editing an item");
         Item item = itemRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found"));
+        System.out.println("An item is edited");
         item.setName(updatedItem.getName());
         item.setDescription(updatedItem.getDescription());
         item.setQuantity(updatedItem.getQuantity());
@@ -59,16 +61,21 @@ public class ItemController {
     @PutMapping("/add")
     public Item addItem(@RequestBody Item newItem) {
         System.out.println("gets here add item");
+        System.out.println(newItem.getDescription() + "," + newItem.getName() + "," + newItem.getId() + ", " + newItem.getUserId() + "," + newItem.getQuantity());
+        System.out.println("before saved: " + newItem);
+        Item savedItem = itemRepository.save(newItem);
+        System.out.println("after saved: " + savedItem);
 //        Item item = itemRepository.findById(id).orElseThrow(() -> new RuntimeException("MyNewItemModal not found"));
 //        item.setName(updatedItem.getName());
 //        item.setDescription(updatedItem.getDescription());
 //        item.setQuantity(updatedItem.getQuantity());
-        return itemRepository.save(newItem);
+        return savedItem;
     }
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{id}")
     public void deleteItem(@PathVariable Long id) {
+        System.out.println("An item has been successfully deleted: " + id);
         itemRepository.deleteById(id);
     }
 }

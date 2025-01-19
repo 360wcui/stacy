@@ -1,6 +1,8 @@
 package com.ussf.dingo.model;
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 public class Item {
     @Id
@@ -10,7 +12,7 @@ public class Item {
     @Column(name = "name")
     private String name;
 
-    @Column(length = 500)
+    @Column(length = 100)
     private String description;
 
     @Column(name = "quantity")

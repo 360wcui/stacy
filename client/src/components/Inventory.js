@@ -48,13 +48,15 @@ const Inventory = () => {
     const [newItem, setNewItem] = useState({
         name: '',
         description: '',
-        quantity: 0
+        quantity: 0,
+        userId: 0,
     })
 
     const [editItem, setEditItem] = useState({
         name: '',
         description: '',
-        quantity: 0
+        quantity: 0,
+        userId: 0
     })
 
     const handleClickOpenEdit = (item) => {
@@ -95,11 +97,11 @@ const Inventory = () => {
         setSnackbarOpen(false)
     }
 
-    const handleDelete = async (id)  => {
+    const handleDelete = async (itemId) => {
         setSnackbarOpen(true)
         try {
-            await axiosWithToken.delete(`http://localhost:8080/product/${id}`);
-            setItems(items.filter(item => item.id !== id));
+            await axiosWithToken.delete(`${SERVER_URL}/api/item/${itemId}`);
+            setItems(items.filter(item => item.id !== itemId));
 
             setSnackbarMessage("Item was deleted successfully!")
             setSnackbarSeverity("success")
@@ -115,10 +117,7 @@ const Inventory = () => {
     const handleEditItem = async () => {
         setSnackbarOpen(true)
         try {
-            const response = await axiosWithToken.put(`http://localhost:8080/product/${editItem.id}`, {
-                ...editItem,
-                updatedAt: new Date().toISOString(),  // Set current datetime
-            });
+            const response = await axiosWithToken.put(`${SERVER_URL}/api/item/${editItem.id}`, editItem);
             setItems(items.map(item =>
                 item.id === editItem.id ? response.data : item
             ));
@@ -135,10 +134,8 @@ const Inventory = () => {
     const handleAddItem = async () => {
         setSnackbarOpen(true)
         try {
-            const response = await axiosWithToken.post('http://localhost:8080/products', {
-                ...newItem,
-                createdAt: new Date().toISOString(),  // Set current datetime
-            });
+            const response = await axiosWithToken.put(`${SERVER_URL}/api/item/add`,
+                newItem);
             setItems([...items, response.data])
             setNewItem({
                 name: '',
@@ -148,7 +145,7 @@ const Inventory = () => {
             setSnackbarMessage("An item was added successfully!")
             setSnackbarSeverity("success")
             handleClose();
-        }catch(error){
+        } catch (error) {
             setSnackbarMessage("Error: Failed to add an item")
             setSnackbarSeverity("warning")
         }
@@ -159,7 +156,7 @@ const Inventory = () => {
         setPage(0)
     }
 
-    const filteredItems  = items.filter( item =>
+    const filteredItems = items.filter(item =>
         (item.name && item.name.toLowerCase().includes(filterText.toLocaleLowerCase())) ||
         (item.description && item.description.toLowerCase().includes(filterText.toLocaleLowerCase()))
     );
@@ -184,7 +181,12 @@ const Inventory = () => {
             axios.get(`${SERVER_URL}/api/item/user/1`)
                 .then(response => setItems(response.data))
                 .catch(error => console.error(error));
+        } else {
+            axios.get(`${SERVER_URL}/api/item/user/1`)
+                .then(response => setItems(response.data))
+                .catch(error => console.error(error));
         }
+
     }, []);
 
     const addNewItem = () => {
@@ -202,7 +204,7 @@ const Inventory = () => {
             border="ActiveBorder"
             fullWidth
         >
-            <Card sx={{ width: '80%', padding: '2rem', border: '1px solid black', borderRadius: '8px' }}>
+            <Card sx={{width: '80%', padding: '2rem', border: '1px solid black', borderRadius: '8px'}}>
                 <TableContainer>
                     <Box display="flex" justifyContent="flex-start">
                         <Button variant='contained' onClick={handleClickOpen}> Add New</Button>
@@ -213,53 +215,53 @@ const Inventory = () => {
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell sx={{ fontWeight: 'bold' }} scope="col">#</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} scope="col">Item Name</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} scope="col">Description</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} scope='col'>Quantity</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} scope="col">User ID</TableCell>
+                                <TableCell sx={{fontWeight: 'bold'}} scope="col">#</TableCell>
+                                <TableCell sx={{fontWeight: 'bold'}} scope="col">Item Name</TableCell>
+                                <TableCell sx={{fontWeight: 'bold'}} scope="col">Description</TableCell>
+                                <TableCell sx={{fontWeight: 'bold'}} scope='col'>Quantity</TableCell>
+                                <TableCell sx={{fontWeight: 'bold'}} scope="col">User ID</TableCell>
                                 <TableCell scope="col"></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            { filteredItems !== null? filteredItems.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
-                                <TableRow
-                                    key={item.id}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell sx={{ fontSize: '1.1rem' }} scope="row">{page * rowsPerPage + index + 1}</TableCell>
+                            {filteredItems && filteredItems.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
+                                <TableRow key={item.id} sx={{'&:last-child td, &:last-child th': {border: 0}}}>
+                                    <TableCell sx={{fontSize: '1.1rem'}} scope="row">{page * rowsPerPage + index + 1}</TableCell>
 
-                                    <TableCell sx={{ fontSize: '1.1rem' }}><Link to={`/item`} state={{currentProduct: item}} >{item.name}</Link></TableCell>
+                                    <TableCell sx={{fontSize: '1.1rem'}}><Link to={`/item`}
+                                                                               state={{currentProduct: item}}>{item.name}</Link></TableCell>
 
-                                    <TableCell sx={{ fontSize: '1.1rem' }}>{item.description}</TableCell>
+                                    <TableCell sx={{fontSize: '1.1rem'}}>{item.description}</TableCell>
+                                    <TableCell sx={{fontSize: '1.1rem'}}>{item.quantity}</TableCell>
+                                    <TableCell sx={{fontSize: '1.1rem'}}>{item.userId}</TableCell>
 
                                     <TableCell align='center'>
                                         <IconButton color='secondary' onClick={() => handleConfirmOpen(item.id)}>
-                                            <DeleteIcon />
+                                            <DeleteIcon/>
                                         </IconButton>
                                         <IconButton color='secondary' onClick={() => handleClickOpenEdit(item)}>
-                                            <EditIcon />
+                                            <EditIcon/>
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
-                            ) ): (<TableRow><TableCell>Loading... </TableCell></TableRow>)}
+                            ))}
                         </TableBody>
                     </Table>
-                    <TablePagination  sx={{ fontSize: '1.1rem' }}
-                                      component="div"
-                                      count={items!= null? items.length: 0}
-                                      page={page}
-                                      onPageChange={handleChangePage}
-                                      rowsPerPage={rowsPerPage}
-                                      onRowsPerPageChange={handleChangeRowsPerPage}
-                                      rowsPerPageOptions={[5, 10, 25]}  // Options for rows per page
+                    <TablePagination sx={{fontSize: '1.1rem'}}
+                                     component="div"
+                                     count={items != null ? items.length : 0}
+                                     page={page}
+                                     onPageChange={handleChangePage}
+                                     rowsPerPage={rowsPerPage}
+                                     onRowsPerPageChange={handleChangeRowsPerPage}
+                                     rowsPerPageOptions={[5, 10, 25]}  // Options for rows per page
                     />
                 </TableContainer>
                 <hr></hr>
             </Card>
             {/* Confirmation Dialog for Deletion */}
             <Dialog open={confirmOpen}
-                    style={{ width: '600px', maxWidth: '600px' }} // Custom width
+                    style={{width: '600px', maxWidth: '600px'}} // Custom width
                     onClose={handleConfirmClose}>
                 <DialogTitle>Confirm Deletion</DialogTitle>
                 <DialogContent>
@@ -288,7 +290,7 @@ const Inventory = () => {
 
                     <TextField
                         margin="dense"
-                        name="title"
+                        name="name"
                         label="Item Name"
                         type="text"
                         fullWidth
@@ -313,6 +315,15 @@ const Inventory = () => {
                         value={newItem.quantity}
                         onChange={handleChange}
                     />
+                    <TextField
+                        margin="dense"
+                        name="userId"
+                        label="User ID"
+                        type="number"
+                        fullWidth
+                        value={newItem.userId}
+                        onChange={handleChange}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
@@ -334,13 +345,13 @@ const Inventory = () => {
                         label="Item Name"
                         type="text"
                         fullWidth
-                        value={editItem.title}
+                        value={editItem.name}
                         onChange={handleChangeEdit}
                     />
                     <TextField
                         margin="dense"
                         name="description"
-                        label="Quantity"
+                        label="Description"
                         type="text"
                         fullWidth
                         value={editItem.description}
@@ -348,11 +359,11 @@ const Inventory = () => {
                     />
                     <TextField
                         margin="dense"
-                        name="content"
-                        label="Content"
+                        name="quantity"
+                        label="quantity"
                         type="text"
                         fullWidth
-                        value={editItem.content}
+                        value={editItem.quantity}
                         onChange={handleChangeEdit}
                     />
 
@@ -361,7 +372,7 @@ const Inventory = () => {
                     <Button onClick={handleCloseEdit} color="primary">
                         Cancel
                     </Button>
-                    <Button color="primary" variant="contained"  onClick={handleEditItem} >
+                    <Button color="primary" variant="contained" onClick={handleEditItem}>
                         Update Item
                     </Button>
                 </DialogActions>
