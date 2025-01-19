@@ -1,6 +1,7 @@
 package com.ussf.dingo.controller;
 
 import com.ussf.dingo.model.User;
+import com.ussf.dingo.security.JwtResponse;
 import com.ussf.dingo.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,12 +37,12 @@ class UserControllerTest {
         when(userService.registerUser(any(User.class))).thenReturn(testUser);
 
         // Act: call the controller method
-        ResponseEntity<User> result = userController.registerUser(testUser);
+        ResponseEntity<JwtResponse> result = userController.registerUser(testUser);
 
         // Assert: verify the result
         assertNotNull(result);
-        assertEquals("testuser", result.getBody().getUsername());
-        assertEquals("password123", result.getBody().getPassword());
+        assertEquals("testuser", result.getBody().getUser().getUsername());
+        assertEquals("password123", result.getBody().getUser().getPassword());
 
         // Verify that userService.registerUser was called exactly once
         verify(userService, times(1)).registerUser(any(User.class));
