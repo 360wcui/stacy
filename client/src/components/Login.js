@@ -18,6 +18,11 @@ const Login = () => {
         try {
             const response = await axios.post(`${SERVER_URL}/api/users/login`, { username, password });
             if (response.status === 200) {
+                const { token, userId } = response.data;
+                // Store the token securely in localStorage or sessionStorage
+                localStorage.setItem('jwtToken', token);
+                localStorage.setItem('userId', userId);
+
                 navigate('/inventory');
             } else {
                 setError(response.data);

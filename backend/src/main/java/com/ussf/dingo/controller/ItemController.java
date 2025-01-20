@@ -5,6 +5,8 @@ import com.ussf.dingo.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 import java.util.List;
 import com.ussf.dingo.model.Item;
 
@@ -17,7 +19,8 @@ public class ItemController {
     @GetMapping("/user/{userId}")
     public List<Item> getUserItems(@PathVariable Long userId) {
         System.out.println("gets items for user: " + userId);
-        return itemRepository.findByUserId(userId);
+        List<Item> list = itemRepository.findByUserId(userId);
+        return list;
     }
 
     @PreAuthorize("hasRole('USER')")  // Check for role-based access
@@ -59,11 +62,12 @@ public class ItemController {
     }
 
     @PreAuthorize("hasRole('USER')")  // Check for role-based access
-    @PutMapping("/add")
-    public Item addItem(@RequestBody Item newItem) {
+    @PutMapping("/add/{userId}")
+    public Item addItem(@PathVariable Long userId, @RequestBody Item newItem) {
         System.out.println("gets here add item");
         System.out.println(newItem.getDescription() + "," + newItem.getName() + "," + newItem.getId() + ", " + newItem.getUserId() + "," + newItem.getQuantity());
         System.out.println("before saved: " + newItem);
+        newItem.setUserId(userId);
         Item savedItem = itemRepository.save(newItem);
         System.out.println("after saved: " + savedItem);
 //        Item item = itemRepository.findById(id).orElseThrow(() -> new RuntimeException("MyNewItemModal not found"));

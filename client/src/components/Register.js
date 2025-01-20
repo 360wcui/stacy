@@ -32,6 +32,12 @@ const Register = () => {
             const response = await axios.post(`${SERVER_URL}/api/users/register`, formData);
 
             if(response.status === 201) {
+                const { token, userId } = response.data;
+
+                // Store the token securely in localStorage or sessionStorage
+                localStorage.setItem('jwtToken', token);
+                localStorage.setItem('userId', userId);
+
                 navigation('/success')
             } else {
                 const errorText = await response.text();
