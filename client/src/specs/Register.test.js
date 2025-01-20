@@ -11,6 +11,19 @@ const renderWithRouter = (component) => {
 };
 
 describe("Register Component", () => {
+
+    beforeAll(() => {
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+        jest.spyOn(console, 'log').mockImplementation(() => {});
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterAll(() => {
+        console.warn.mockRestore();
+        console.log.mockRestore();
+        console.error.mockRestore();
+    });
+
     it("renders the form with all fields and button", () => {
         renderWithRouter(<Register />);
 

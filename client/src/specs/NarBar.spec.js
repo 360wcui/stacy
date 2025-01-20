@@ -11,6 +11,18 @@ describe('NavBar Component', () => {
         localStorage.clear();
     });
 
+    beforeAll(() => {
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+        jest.spyOn(console, 'log').mockImplementation(() => {});
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterAll(() => {
+        console.warn.mockRestore();
+        console.log.mockRestore();
+        console.error.mockRestore();
+    });
+
     const renderNavBar = (hasJwtToken) => {
         render(
             <Router>

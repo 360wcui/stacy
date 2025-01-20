@@ -15,6 +15,17 @@ const renderWithRouter = (component) => {
 
 describe('Login Component', () => {
 
+    beforeAll(() => {
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+        jest.spyOn(console, 'log').mockImplementation(() => {});
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterAll(() => {
+        console.warn.mockRestore();
+        console.log.mockRestore();
+        console.error.mockRestore();
+    });
 
     it('should render the login form correctly', () => {
         renderWithRouter(<Login />);
