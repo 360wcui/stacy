@@ -1,14 +1,12 @@
-// MyNewItemModal Controller
 package com.ussf.dingo.controller;
 
+import com.ussf.dingo.model.Item;
 import com.ussf.dingo.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import com.ussf.dingo.model.Item;
 
 @RestController
 @RequestMapping("/api/item")
