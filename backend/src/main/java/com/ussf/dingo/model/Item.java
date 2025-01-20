@@ -12,7 +12,7 @@ public class Item {
     @Column(name = "name")
     private String name;
 
-    @Column(length = 100)
+    @Column(length = 500)
     private String description;
 
     @Column(name = "quantity")
