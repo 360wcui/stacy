@@ -3,14 +3,20 @@ import {AppBar, Box, Button, Toolbar, Typography} from '@mui/material';
 import {useNavigate} from "react-router-dom";
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import {
-    usePopupState,
-    bindTrigger,
-    bindMenu,
-} from 'material-ui-popup-state/hooks'
+import {bindMenu, bindTrigger, usePopupState,} from 'material-ui-popup-state/hooks'
+
 const NavBar = ({hasJwtToken, setHasJwtToken}) => {
 
     const navigate = useNavigate()
+
+    const [myAccountDisabled, setMyAccountDisabled] = useState(true);
+
+    const handleDropdownClicked = () => {
+        console.log("clicked")
+        const token = localStorage.getItem('jwtToken');
+        setMyAccountDisabled(token === null)
+    }
+
     const handleLoginClick = () => {
         const token = localStorage.getItem('jwtToken');
         setHasJwtToken(false)
@@ -42,11 +48,11 @@ const NavBar = ({hasJwtToken, setHasJwtToken}) => {
         const popupState = usePopupState({ variant: 'popover', popupId: 'demoMenu' })
         return (
             <div>
-                <Button variant="contained" {...bindTrigger(popupState)}>
+                <Button variant="contained" {...bindTrigger(popupState)} onFocus={handleDropdownClicked}>
                     Inventory
-                </Button>
+                </Button >
                 <Menu {...bindMenu(popupState)}>
-                    <MenuItem onClick={handleViewMyAccount}>My Account</MenuItem>
+                    <MenuItem disabled={myAccountDisabled} onClick={handleViewMyAccount}>My Account</MenuItem>
                     <MenuItem onClick={handleViewAll}>View All</MenuItem>
                 </Menu>
             </div>
