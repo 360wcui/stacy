@@ -23,7 +23,7 @@ import {
     TableRow,
     TextField
 } from "@mui/material";
-import axiosWithToken from "../axiosWithToken";
+import {addNewItemWithAuth, deleteWithAuth, getWithAuth, updateItemWithAuth} from "../axiosWithToken";
 import {Link} from "react-router-dom";
 
 
@@ -102,7 +102,7 @@ const Inventory = () => {
     const handleDelete = async (itemId) => {
         setSnackbarOpen(true)
         try {
-            await axiosWithToken.delete(`${SERVER_URL}/api/item/${itemId}`);
+            await deleteWithAuth(`${SERVER_URL}/api/item/${itemId}`);
             setItems(items.filter(item => item.id !== itemId));
 
             setSnackbarMessage("Item was deleted successfully!")
@@ -119,7 +119,7 @@ const Inventory = () => {
     const handleEditItem = async () => {
         setSnackbarOpen(true)
         try {
-            const response = await axiosWithToken.put(`${SERVER_URL}/api/item/${editItem.id}`, editItem);
+            const response = await updateItemWithAuth(`${SERVER_URL}/api/item/${editItem.id}`, editItem);
             setItems(items.map(item =>
                 item.id === editItem.id ? response.data : item
             ));
@@ -136,17 +136,27 @@ const Inventory = () => {
     const handleAddItem = async () => {
         setSnackbarOpen(true)
         try {
-            const response = await axiosWithToken.put(`${SERVER_URL}/api/item/add`,
-                newItem);
-            setItems([...items, response.data])
-            setNewItem({
-                name: '',
-                description: '',
-                quantity: 0
-            });
-            setSnackbarMessage("An item was added successfully!")
-            setSnackbarSeverity("success")
-            handleClose();
+            const token = localStorage.getItem('jwtToken');
+            const userId = localStorage.getItem('userId');
+            if (token) {
+                try {
+                    const response = await addNewItemWithAuth(`${SERVER_URL}/api/item/add/${userId}`,
+                        newItem);
+                    setItems([...items, response.data])
+                    setNewItem({
+                        name: '',
+                        description: '',
+                        quantity: 0
+                    });
+                    setSnackbarMessage("An item was added successfully!")
+                    setSnackbarSeverity("success")
+                    handleClose();
+                } catch (error) {
+                    console.error('Invalid token:', error);
+                }
+
+            }
+
         } catch (error) {
             setSnackbarMessage("Error: Failed to add an item")
             setSnackbarSeverity("warning")
@@ -158,10 +168,7 @@ const Inventory = () => {
         setPage(0)
     }
 
-    const filteredItems = items.filter(item =>
-        (item.name && item.name.toLowerCase().includes(filterText.toLocaleLowerCase())) ||
-        (item.description && item.description.toLowerCase().includes(filterText.toLocaleLowerCase()))
-    );
+
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -175,17 +182,22 @@ const Inventory = () => {
 
 
     useEffect(() => {
-        const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem('jwtToken');
+        const userId = localStorage.getItem('userId');
         if (token) {
-            // const userData = jwtDecode(token);
-            // setUser(userData);
-
-            axios.get(`${SERVER_URL}/api/item/user/1`)
-                .then(response => setItems(response.data))
-                .catch(error => console.error(error));
+            try {
+                getWithAuth(`${SERVER_URL}/api/item/user/${userId}`)
+                    .then(response => {
+                        console.log("Response Data:", response.data);
+                        setItems(response.data);
+                    })
+                    .catch(error => console.error(error));
+            } catch (error) {
+                console.error('Invalid token:', error);
+            }
         } else {
-            const userId = 1
-            axios.get(`${SERVER_URL}/api/item/user/${userId}`)
+            console.log("no jwt token is found")
+            axios.get(`${SERVER_URL}/api/item/user/-1`)
                 .then(response => setItems(response.data))
                 .catch(error => console.error(error));
         }
@@ -227,7 +239,7 @@ const Inventory = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {filteredItems && filteredItems.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
+                            {items && items.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
                                 <TableRow key={item.id} sx={{'&:last-child td, &:last-child th': {border: 0}}}>
                                     <TableCell sx={{fontSize: '1.1rem'}} scope="row">{item.id}</TableCell>
 
@@ -296,7 +308,7 @@ const Inventory = () => {
                         label="Item Name"
                         type="text"
                         fullWidth
-                        value={newItem.title}
+                        value={newItem.name}
                         onChange={handleChange}
                     />
                     <TextField
@@ -317,15 +329,7 @@ const Inventory = () => {
                         value={newItem.quantity}
                         onChange={handleChange}
                     />
-                    <TextField
-                        margin="dense"
-                        name="userId"
-                        label="User ID"
-                        type="number"
-                        fullWidth
-                        value={newItem.userId}
-                        onChange={handleChange}
-                    />
+
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
