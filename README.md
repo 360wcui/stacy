@@ -1,9 +1,6 @@
-This is a React + Spring Boot app for Supra Coder RAP program
+This is a React + Spring Boot app for Supra Coder RAP program.  The app is writen in Java and JavaScript.
 
-
-## First-time Setup
-
-### React Client
+## React
 #### First-time setup
 1. Install `docker`
 1. install `yarn`
@@ -15,22 +12,33 @@ sudo apt install yarn
 ```
 1. cd to `client` directory.  Install node.js `https://nodejs.org/en/download/`
 1. Open a terminal, and `yarn install` all the dependencies
-1. `yarn start` to start the web app
-2. Make sure nodejs 18 is installed.
--  May need `export NODE_OPTIONS=--openssl-legacy-provider` in ~/.bashrc/~/.zshrc file
 
-
-### Run Client
+#### Run Client
 1. cd to `client` directory, and `yarn start` to start the web app
+Note. Please make sure nodejs 18 is installed.
 
-### Run MySQL docker container
-
-### Spring-boot Server
+## Sping Boot 
 #### First-time setup
+1. Install `maven`
+   
+### Run Sping Boot Server
+1. cd to `backend` directory and `mvn spring-boot:run`
+
+
+## MySQL Database
+1. The database is running in a MySQL docker container
 1. Make sure MySQL docker container is running by checking `docker ps`.
-1. If MySQL is not running,
+1. If MySQL is not running, run the following command
 - `docker run -p 3306:3306 --name dingo -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=dingo_db -e MYSQL_USER=wc -e MYSQL_PASSWORD=password -d mysql:8`
 
-#### Run Backend
-1. cd to `Backend` directory and run `mvn spring-boot:run`
+
+## Tests
+#### Run Jest Tests
+1. cd to `client` directory, and `yarn test` to run jest tests
+
+#### Run Integration Tests 
+1. cd to `client` directory, and `yarn cypress` to run the integration tests
+
+#### Run Java Unit Tests
+1. cd to `backend` directory, and `mvn test` to run unit tests
 
