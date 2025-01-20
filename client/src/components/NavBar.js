@@ -35,7 +35,7 @@ const NavBar = ({hasJwtToken, setHasJwtToken}) => {
     }
 
     const handleViewAll = () => {
-        navigate("/inventory");
+        navigate("/inventoryAll");
     }
 
     const MenuPopupState = () => {

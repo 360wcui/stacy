@@ -21,6 +21,13 @@ public class ItemController {
         return list;
     }
 
+    @GetMapping("/user/all")
+    public List<Item> getUserItems() {
+        System.out.println("gets all items");
+        List<Item> list = itemRepository.findAll();
+        return list;
+    }
+
     @PreAuthorize("hasRole('USER')")  // Check for role-based access
     @PostMapping
     public Item createItem(@RequestBody Item item) {

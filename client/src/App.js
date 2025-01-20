@@ -7,6 +7,7 @@ import Inventory from './components/Inventory';
 import Success from "./components/Success";
 import NavBar from "./components/NavBar";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
+import InventoryAll from "./components/InventoryAll";
 
 const App = () => {
 
@@ -21,6 +22,7 @@ const App = () => {
                     <Route path="/register" element={<Register hasJwtToken={hasJwtToken} setHasJwtToken={setHasJwtToken}/>}/>
                     <Route path="/login" element={<Login hasJwtToken={hasJwtToken} setHasJwtToken={setHasJwtToken}/>} />
                     <Route path="/inventory" element={<Inventory/>}/>
+                    <Route path="/inventoryAll" element={<InventoryAll/>}/>
                     <Route path="/success" element={<Success/>}/>
                 </Routes>
             </BrowserRouter>
