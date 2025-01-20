@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {SERVER_URL} from "../variables";
 import {Box, Button, Card, CardContent, CardHeader, Container, TextField, Typography} from "@mui/material";
 
-const Login = () => {
+const Login = ({hasJwtToken, setHasJwtToken}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -22,7 +22,7 @@ const Login = () => {
                 // Store the token securely in localStorage or sessionStorage
                 localStorage.setItem('jwtToken', token);
                 localStorage.setItem('userId', userId);
-
+                setHasJwtToken(true)
                 navigate('/inventory');
             } else {
                 setError(response.data);

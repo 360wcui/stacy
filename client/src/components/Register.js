@@ -4,7 +4,7 @@ import {SERVER_URL} from "../variables";
 import { useNavigate } from "react-router-dom";
 import {Box, Button, Card, CardContent, CardHeader, Container, TextField, Typography} from '@mui/material';
 
-const Register = () => {
+const Register = ({hasJwtToken, setHasJwtToken}) => {
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -37,7 +37,7 @@ const Register = () => {
                 // Store the token securely in localStorage or sessionStorage
                 localStorage.setItem('jwtToken', token);
                 localStorage.setItem('userId', userId);
-
+                setHasJwtToken(true)
                 navigation('/success')
             } else {
                 const errorText = await response.text();
