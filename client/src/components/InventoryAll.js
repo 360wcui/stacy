@@ -1,29 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {SERVER_URL} from "../variables";
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
 import Table from '@mui/material/Table';
 import TablePagination from '@mui/material/TablePagination';
-import {
-    Alert,
-    Box,
-    Button,
-    Card,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    IconButton,
-    Snackbar,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField
-} from "@mui/material";
-import {addNewItemWithAuth, deleteWithAuth, getWithAuth, updateItemWithAuth} from "../axiosWithToken";
+import {Box, Card, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 
 
 const InventoryAll = () => {

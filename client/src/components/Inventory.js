@@ -197,10 +197,7 @@ const Inventory = () => {
 
 
     }, [refreshItems]);
-
-    const addNewItem = () => {
-        setNewItemModal(true)
-    }
+    
 
 
     return (
