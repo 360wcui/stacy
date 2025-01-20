@@ -64,14 +64,13 @@ describe('Inventory Component', () => {
         expect(screen.getByText('Add New')).toBeInTheDocument();
     });
 
-    it('fetches and displays items from API', async () => {
+    it('fetches and displays items from API and test long description', async () => {
         // Mock API response
         const mockItems = [
-            {id: 1, name: 'Item 1', description: 'This is a test description for Item 1'},
             {
                 id: 2,
-                name: 'Item 2',
-                description: 'Another test description that is longer than 100 characters.  it is so long and you should not see the full description.  Instead, you are going to see the ... .'
+                name: 'Long Description Item',
+                description: 'Another test description that is longer than 100 characters.  it is so long and you should not see the full description. it is so long and you should not see the full description.  Instead, you are going to see the ...'
             },
         ];
         axios.get.mockResolvedValueOnce({data: mockItems});
@@ -85,13 +84,16 @@ describe('Inventory Component', () => {
 
         // Wait for the items to be displayed
         await waitFor(() => {
-            expect(screen.getByText('Item 1')).toBeInTheDocument();
-            expect(screen.getByText('Item 2')).toBeInTheDocument();
-            expect(screen.getByText(/This is a test description for Item 1/i)).toBeInTheDocument();
+            expect(screen.getByText('Long Description Item')).toBeInTheDocument();
 
+            // const descriptionElement = screen.getByTestId("description")
             const itemElement = screen.getByTestId("test-table");
+            expect(itemElement.querySelectorAll("tr").length).toBe(2);
 
-            expect(itemElement.querySelectorAll("tr").length).toBe(3);
+            const rowElements = itemElement.querySelectorAll("tr")
+            expect(rowElements[1].querySelectorAll("td").length).toBe(6)
+            expect(rowElements[1].querySelectorAll("td")[2].innerHTML).toBe("Another test description that is longer than 100 characters.  it is so long and you should not see t...")
+
         });
 
 

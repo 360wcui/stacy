@@ -238,7 +238,7 @@ const Inventory = () => {
 
                                     <TableCell sx={{fontSize: '1.1rem'}}>{item.name}</TableCell>
 
-                                    <TableCell sx={{fontSize: '1.1rem'}}>{item.description}</TableCell>
+                                    <TableCell data-testid="description" sx={{maxWidth: '150px', whiteSpace: 'normal', wordWrap: 'break-word', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '1.1rem'}}>{item.description.length > 100 ? `${item.description.slice(0, 100)}...` : item.description}</TableCell>
                                     <TableCell sx={{fontSize: '1.1rem'}}>{item.quantity}</TableCell>
                                     <TableCell sx={{fontSize: '1.1rem'}}>{item.userId}</TableCell>
 
