@@ -24,19 +24,16 @@ import {
     TextField
 } from "@mui/material";
 import {addNewItemWithAuth, deleteWithAuth, getWithAuth, updateItemWithAuth} from "../axiosWithToken";
-import {Link} from "react-router-dom";
 
 
 const Inventory = () => {
     const [items, setItems] = useState([]);
+    const [refreshItems, setRefreshItems] = useState(false);
     const [newItemModal, setNewItemModal] = useState(false);
-    const [user, setUser] = useState(false);
 
     const [snackbarOpen, setSnackbarOpen] = useState(false)
     const [snackbarMessage, setSnackbarMessage] = useState("")
     const [snackbarSeverity, setSnackbarSeverity] = useState('success')
-
-    const [filterText, setFilterText] = useState("")
 
     const [page, setPage] = useState(0);  // Current page index
     const [rowsPerPage, setRowsPerPage] = useState(5);  // Number of rows per page
@@ -149,7 +146,8 @@ const Inventory = () => {
                         quantity: 0
                     });
                     setSnackbarMessage("An item was added successfully!")
-                    setSnackbarSeverity("success")
+                    setSnackbarSeverity("warning")
+                    setRefreshItems(prev => !prev)
                     handleClose();
                 } catch (error) {
                     console.error('Invalid token:', error);
@@ -161,11 +159,6 @@ const Inventory = () => {
             setSnackbarMessage("Error: Failed to add an item")
             setSnackbarSeverity("warning")
         }
-    }
-
-    const handleFilterChange = (event) => {
-        setFilterText(event.target.value)
-        setPage(0)
     }
 
 
@@ -202,7 +195,8 @@ const Inventory = () => {
                 .catch(error => console.error(error));
         }
 
-    }, [items]);
+
+    }, [refreshItems]);
 
     const addNewItem = () => {
         setNewItemModal(true)
