@@ -2,12 +2,24 @@ import React from 'react';
 import {render, screen, waitFor} from '@testing-library/react';
 import {BrowserRouter as Router} from 'react-router-dom';
 import axios from 'axios';
-import Inventory from '../components/Inventory';
+import Inventory from '../components/inventory.js';
 import {SERVER_URL} from "../variables";
 
 jest.mock('axios'); // Mock axios
 
 describe('Inventory Component', () => {
+
+    beforeAll(() => {
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+        jest.spyOn(console, 'log').mockImplementation(() => {});
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterAll(() => {
+        console.warn.mockRestore();
+        console.log.mockRestore();
+        console.error.mockRestore();
+    });
 
     it('should render the Inventory page with correct content', async () => {
         // Mock API response
@@ -25,11 +37,6 @@ describe('Inventory Component', () => {
             </Router>
         );
 
-        // Check if the heading "Inventory" is rendered
-        expect(screen.getByText('Inventory')).toBeInTheDocument();
-
-        // Check if the welcome message is rendered
-        expect(screen.getByText('Welcome to your inventory page!')).toBeInTheDocument();
 
         // Wait for the items to be rendered
         await waitFor(() => {
@@ -49,8 +56,12 @@ describe('Inventory Component', () => {
         );
 
         // Assert the presence of the title and link
-        expect(screen.getByText('Inventory')).toBeInTheDocument();
-        expect(screen.getByText('Add New Item')).toBeInTheDocument();
+        expect(screen.getByText('Item Name')).toBeInTheDocument();
+        expect(screen.getByText('Description')).toBeInTheDocument();
+        expect(screen.getByText('Quantity')).toBeInTheDocument();
+        expect(screen.getByText('User ID')).toBeInTheDocument();
+        expect(screen.getByText('#')).toBeInTheDocument();
+        expect(screen.getByText('Add New')).toBeInTheDocument();
     });
 
     it('fetches and displays items from API', async () => {

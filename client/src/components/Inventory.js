@@ -219,9 +219,8 @@ const Inventory = () => {
                         <Button variant='contained' onClick={handleClickOpen}> Add New</Button>
                     </Box>
 
-
                     <hr></hr>
-                    <Table aria-label="simple table">
+                    <Table aria-label="simple table" data-testid="test-table">
                         <TableHead>
                             <TableRow>
                                 <TableCell sx={{fontWeight: 'bold'}} scope="col">#</TableCell>
