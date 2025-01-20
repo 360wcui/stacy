@@ -21,7 +21,7 @@ Note. Please make sure nodejs 18 is installed.
 #### First-time setup
 1. Install `maven`
    
-### Run Sping Boot Server
+#### Run Sping Boot Server
 1. cd to `backend` directory and `mvn spring-boot:run`
 
 
