@@ -17,20 +17,19 @@ sudo apt install yarn
 1. cd to `client` directory, and `yarn start` to start the web app
 Note. Please make sure nodejs 18 is installed.
 
-## Sping Boot 
-#### First-time setup
-1. Install `maven`
-   
-#### Run Sping Boot Server
-1. cd to `backend` directory and `mvn spring-boot:run`
-
-
 ## MySQL Database
-1. The database is running in a MySQL docker container
+1. The database is running in a MySQL docker container.  
 1. Make sure MySQL docker container is running by checking `docker ps`.
 1. If MySQL is not running, run the following command
 - `docker run -p 3306:3306 --name dingo -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=dingo_db -e MYSQL_USER=wc -e MYSQL_PASSWORD=password -d mysql:8`
 
+## Sping Boot 
+#### First-time setup
+1. Install `maven`
+2. Make sure MySQL docker container is running.
+   
+#### Run Sping Boot Server
+1. cd to `backend` directory and `mvn spring-boot:run`
 
 ## Tests
 #### Run Jest Tests
